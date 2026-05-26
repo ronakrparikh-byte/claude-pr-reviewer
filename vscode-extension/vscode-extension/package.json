@@ -1,0 +1,54 @@
+{
+  "name": "claude-pr-reviewer",
+  "displayName": "Claude Code Reviewer",
+  "description": "On-demand Python code review powered by Claude Haiku",
+  "version": "0.1.0",
+  "engines": { "vscode": "^1.85.0" },
+  "categories": ["Linters"],
+  "activationEvents": ["onLanguage:python"],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "claude-reviewer.reviewFile",
+        "title": "Claude: Review This File"
+      },
+      {
+        "command": "claude-reviewer.clearDiagnostics",
+        "title": "Claude: Clear Review Results"
+      }
+    ],
+    "configuration": {
+      "title": "Claude Code Reviewer",
+      "properties": {
+        "claude-reviewer.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Your Anthropic API key (get one at console.anthropic.com)"
+        },
+        "claude-reviewer.model": {
+          "type": "string",
+          "default": "claude-haiku-4-5-20251001",
+          "enum": [
+            "claude-haiku-4-5-20251001",
+            "claude-sonnet-4-6"
+          ],
+          "description": "Claude model to use (Haiku = fast/cheap, Sonnet = deeper analysis)"
+        },
+        "claude-reviewer.autoReviewOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically review Python files when you save them"
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "claude-reviewer.reviewFile",
+        "key": "ctrl+shift+r",
+        "mac": "cmd+shift+r",
+        "when": "editorLangId == python"
+      }
+    ]
+  }
+}
