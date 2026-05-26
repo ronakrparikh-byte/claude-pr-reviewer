@@ -1,0 +1,32 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]  # fires on new PR and every new push to it
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write   # needed to post PR comments
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install anthropic requests
+
+      - name: Run Claude code review
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}      # auto-provided by GitHub
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}  # you add this
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: python scripts/review_pr.py
