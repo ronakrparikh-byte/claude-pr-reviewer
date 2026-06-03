@@ -168,10 +168,12 @@ If no real issues exist return an empty issues array.`;
         try {
           const parsed = JSON.parse(data);
           if (parsed.error) {
-            reject(new Error(parsed.error.message || "Anthropic API error"));
+        reject(new Error(parsed.error.message || "Anthropic API error"));
             return;
           }
-          const text   = parsed.content?.[0]?.text || "{}";
+          let text = parsed.content?.[0]?.text || "{}";
+          // Strip markdown code fences if Claude wraps its response
+          text = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/, "").trim();
           const review = JSON.parse(text);
           resolve(review.issues || []);
         } catch (e) {
